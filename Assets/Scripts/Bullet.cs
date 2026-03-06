@@ -16,3 +16,4 @@ public class Bullet : MonoBehaviour
         }
     }
 }
+// 엄청 커다란 모기가 나의 발을 물었어
