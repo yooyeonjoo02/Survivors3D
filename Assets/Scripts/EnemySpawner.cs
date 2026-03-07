@@ -77,10 +77,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnEnemy()
     {
-        // 플레이어 주변 원형 외곽에서 랜덤 스폰
-        Vector2 rand = Random.insideUnitCircle.normalized * spawnDistance;
-        Vector3 spawnPos = new Vector3(player.position.x + rand.x, 1f, player.position.z + rand.y);
-
+        Vector3 spawnPos = GetSpawnPosition();
         GameObject enemyObj = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
 
         // Enemy 스크립트에 타겟 전달
@@ -93,9 +90,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void SpawnElite()
     {
-        Vector2 rand = Random.insideUnitCircle.normalized * spawnDistance;
-        Vector3 spawnPos = new Vector3(player.position.x + rand.x, 1f, player.position.z + rand.y);
-
+        Vector3 spawnPos = GetSpawnPosition();
         GameObject eliteObj = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
 
         eliteObj.transform.localScale *= eliteScaleMultiplier;
@@ -108,5 +103,11 @@ public class EnemySpawner : MonoBehaviour
             enemy.ApplyEliteBuff(eliteHpMultiplier);
             Debug.Log("ELITE BUFF APPLIED!");
         }
+    }
+
+    private Vector3 GetSpawnPosition()
+    {
+        Vector2 rand = Random.insideUnitCircle.normalized * spawnDistance;
+        return new Vector3(player.position.x + rand.x, 1f, player.position.z + rand.y);
     }
 }
