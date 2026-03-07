@@ -17,9 +17,10 @@ public class Gem : MonoBehaviour
     {
         if (player == null) return;
 
-        float dist = Vector3.Distance(transform.position, player.position);
+        // float dist = Vector3.Distance(transform.position, player.position);
+        Vector3 diff = player.position - transform.position;
 
-        if (dist <= magnetRange)
+        if (diff.sqrMagnitude <= magnetRange * magnetRange)
         {
             transform.position = Vector3.MoveTowards(
                 transform.position,
