@@ -15,6 +15,12 @@ public class Enemy : MonoBehaviour
     [Header("Drop")]
     [SerializeField] private GameObject gemPrefab;
 
+    private const int MIN_HP = 1;
+    private const float FLAT_Y_DIRECTION = 0f;
+    private const float ROTATION_THRESHOLD = 0.0001f;
+    private const int PLAYER_COLLISION_DAMAGE = 1;
+    private const int SCORE_PER_KILL = 1;
+
     private Transform target;
     private bool isDead = false;
 
@@ -31,7 +37,7 @@ public class Enemy : MonoBehaviour
     public void ApplyEliteBuff(float hpMultiplier)
     {
         int newMax = Mathf.CeilToInt(maxHp * hpMultiplier);
-        maxHp = Mathf.Max(1, newMax);
+        maxHp = Mathf.Max(MIN_HP, newMax);
         currentHp = maxHp;
     }
 
@@ -40,7 +46,7 @@ public class Enemy : MonoBehaviour
         moveSpeed += amount;
     }
 
-    public void TakeDamagePublic(int damage)
+    public void TakeDamage(int damage)
     {
         if (isDead) return;
 
@@ -56,13 +62,13 @@ public class Enemy : MonoBehaviour
     {
         if (target == null || isDead) return;
 
-        Vector3 dir = (target.position - transform.position);
-        dir.y = 0f;
+        Vector3 dir = target.position - transform.position;
+        dir.y = FLAT_Y_DIRECTION;
         dir = dir.normalized;
 
         transform.position += dir * moveSpeed * Time.deltaTime;
 
-        if (dir.sqrMagnitude > 0.0001f)
+        if (dir.sqrMagnitude > ROTATION_THRESHOLD)
         {
             transform.rotation = Quaternion.LookRotation(dir);
         }
@@ -76,25 +82,13 @@ public class Enemy : MonoBehaviour
         {
             PlayerHealth ph = other.GetComponent<PlayerHealth>();
             if (ph != null)
-                ph.TakeDamage(1);
+            {
+                ph.TakeDamage(PLAYER_COLLISION_DAMAGE);
+            }
 
             Die();
         }
     }
-
-    /*
-    private void TakeDamage(int damage)
-    {
-        if (isDead) return;
-
-        currentHp -= damage;
-
-        if (currentHp <= 0)
-        {
-            Die();
-        }
-    }
-    */
 
     private void Die()
     {
@@ -103,17 +97,17 @@ public class Enemy : MonoBehaviour
 
         if (GameManager.Instance != null)
         {
-            GameManager.Instance.AddScore(1); // 점수 +1
+            GameManager.Instance.AddScore(SCORE_PER_KILL);
         }
 
         if (gemPrefab != null)
         {
-            Instantiate(gemPrefab, transform.position, Quaternion.identity); // Gem
+            Instantiate(gemPrefab, transform.position, Quaternion.identity);
         }
 
         if (deathFxPrefab != null)
         {
-            Instantiate(deathFxPrefab, transform.position, Quaternion.identity); // 이펙트 
+            Instantiate(deathFxPrefab, transform.position, Quaternion.identity);
         }
 
         Destroy(gameObject);

@@ -10,6 +10,9 @@ public class LevelUpUI : MonoBehaviour
 
     private PlayerStats playerStats;
 
+    private const float GAME_PAUSE_TIME_SCALE = 0f;
+    private const float GAME_NORMAL_TIME_SCALE = 1f;
+
     private void Start()
     {
         levelUpPanel.SetActive(false); // 시작 시 창 숨기기
@@ -23,12 +26,12 @@ public class LevelUpUI : MonoBehaviour
     private void Open()
     {
         levelUpPanel.SetActive(true);
-        Time.timeScale = 0f;
+        Time.timeScale = GAME_PAUSE_TIME_SCALE;
     }
 
     private void Close()
     {
-        Time.timeScale = 1f;
+        Time.timeScale = GAME_NORMAL_TIME_SCALE;
         levelUpPanel.SetActive(false);
     }
 

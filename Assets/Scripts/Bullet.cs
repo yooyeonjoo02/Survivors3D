@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    private const int BULLET_DAMAGE = 1;
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Enemy"))
@@ -9,7 +11,7 @@ public class Bullet : MonoBehaviour
             Enemy enemy = other.GetComponent<Enemy>();
             if (enemy != null)
             {
-                enemy.TakeDamagePublic(1); 
+                enemy.TakeDamage(BULLET_DAMAGE); 
             }
 
             Destroy(gameObject); 

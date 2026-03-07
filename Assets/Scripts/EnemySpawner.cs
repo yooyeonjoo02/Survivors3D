@@ -13,16 +13,24 @@ public class EnemySpawner : MonoBehaviour
 
     [Header("Difficulty Scaling")]
     [SerializeField] private float minSpawnInterval = 0.5f;
-    [SerializeField] private float intervalDecreaseRate = 0.9f; // 30초마다 10% 감소
+    [SerializeField] private float intervalDecreaseRate = 0.9f;
 
     [Header("Elite")]
     [SerializeField] private float eliteHpMultiplier = 3f;
     [SerializeField] private float eliteScaleMultiplier = 2f;
 
+    private const int INITIAL_STAGE_INDEX = -1;
+    private const int INITIAL_WAVE_INDEX = -1;
+    private const float TIMER_RESET = 0f;
+    private const float STAGE_DURATION = 30f;
+    private const float WAVE_DURATION = 5f;
+    private const int DISPLAY_WAVE_OFFSET = 1;
+    private const float SPAWN_Y_POSITION = 1f;
+
     private float timer;
 
-    private int lastStage = -1; 
-    private int lastWave = -1;  
+    private int lastStage = INITIAL_STAGE_INDEX;
+    private int lastWave = INITIAL_WAVE_INDEX;
 
     private void Update()
     {
@@ -34,14 +42,14 @@ public class EnemySpawner : MonoBehaviour
         timer += Time.deltaTime;
         if (timer >= spawnInterval)
         {
-            timer = 0f;
+            timer = TIMER_RESET;
             SpawnEnemy();
         }
     }
 
     private void HandleDifficultyScaling()
     {
-        int stage = Mathf.FloorToInt(Time.time / 30f);
+        int stage = Mathf.FloorToInt(Time.time / STAGE_DURATION);
 
         if (stage != lastStage)
         {
@@ -56,13 +64,13 @@ public class EnemySpawner : MonoBehaviour
 
     private void HandleWaveAndElite()
     {
-        int wave = Mathf.FloorToInt(Time.time / 5f);
+        int wave = Mathf.FloorToInt(Time.time / WAVE_DURATION);
 
         if (wave != lastWave)
         {
             lastWave = wave;
 
-            int waveNumber = wave + 1;
+            int waveNumber = wave + DISPLAY_WAVE_OFFSET;
 
             Debug.Log($"Wave {waveNumber} Start!");
 
@@ -80,7 +88,6 @@ public class EnemySpawner : MonoBehaviour
         Vector3 spawnPos = GetSpawnPosition();
         GameObject enemyObj = Instantiate(enemyPrefab, spawnPos, Quaternion.identity);
 
-        // Enemy 스크립트에 타겟 전달
         Enemy enemy = enemyObj.GetComponent<Enemy>();
         if (enemy != null)
         {
@@ -99,7 +106,6 @@ public class EnemySpawner : MonoBehaviour
         if (enemy != null)
         {
             enemy.SetTarget(player);
-
             enemy.ApplyEliteBuff(eliteHpMultiplier);
             Debug.Log("ELITE BUFF APPLIED!");
         }
@@ -108,6 +114,6 @@ public class EnemySpawner : MonoBehaviour
     private Vector3 GetSpawnPosition()
     {
         Vector2 rand = Random.insideUnitCircle.normalized * spawnDistance;
-        return new Vector3(player.position.x + rand.x, 1f, player.position.z + rand.y);
+        return new Vector3(player.position.x + rand.x, SPAWN_Y_POSITION, player.position.z + rand.y);
     }
 }
