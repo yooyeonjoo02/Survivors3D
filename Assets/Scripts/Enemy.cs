@@ -42,7 +42,14 @@ public class Enemy : MonoBehaviour
 
     public void TakeDamagePublic(int damage)
     {
-        TakeDamage(damage);
+        if (isDead) return;
+
+        currentHp -= damage;
+
+        if (currentHp <= 0)
+        {
+            Die();
+        }
     }
 
     private void Update()
@@ -75,20 +82,19 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    /*
     private void TakeDamage(int damage)
     {
         if (isDead) return;
 
         currentHp -= damage;
 
-        // 로그 테스트용 
-        Debug.Log($"[Enemy] HP: {currentHp}/{maxHp}");
-
         if (currentHp <= 0)
         {
             Die();
         }
     }
+    */
 
     private void Die()
     {
