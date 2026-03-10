@@ -10,14 +10,22 @@ public class Gem : MonoBehaviour
 
     private void Start()
     {
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        GameObject playerObject = GameObject.FindGameObjectWithTag("Player");
+
+        if (playerObject != null)
+        {
+            player = playerObject.transform;
+        }
+        else
+        {
+            Debug.LogWarning("Gem: Player 태그를 가진 오브젝트를 찾지 못했습니다.");
+        }
     }
 
     private void Update()
     {
         if (player == null) return;
 
-        // float dist = Vector3.Distance(transform.position, player.position);
         Vector3 diff = player.position - transform.position;
 
         if (diff.sqrMagnitude <= magnetRange * magnetRange)
@@ -25,7 +33,7 @@ public class Gem : MonoBehaviour
             transform.position = Vector3.MoveTowards(
                 transform.position,
                 player.position,
-                magnetSpeed 
+                magnetSpeed * Time.deltaTime
             );
         }
     }

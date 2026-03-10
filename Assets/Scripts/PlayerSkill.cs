@@ -71,10 +71,4 @@ public class PlayerSkill : MonoBehaviour
         float ratio = Mathf.Clamp01(elapsed / cooldown);
         cooldownSlider.value = ratio;
     }
-
-    private void OnDrawGizmosSelected()
-    {
-        Gizmos.color = Color.cyan;
-        Gizmos.DrawWireSphere(transform.position, skillRadius);
-    }
 }

@@ -28,13 +28,31 @@ public class EnemySpawner : MonoBehaviour
     private const float SPAWN_Y_POSITION = 1f;
 
     private float timer;
+    private float elapsedTime;
+    private float initialSpawnInterval;
 
     private int lastStage = INITIAL_STAGE_INDEX;
     private int lastWave = INITIAL_WAVE_INDEX;
 
+    private void Start()
+    {
+        initialSpawnInterval = spawnInterval;
+
+        timer = 0f;
+        elapsedTime = 0f;
+        spawnInterval = initialSpawnInterval;
+
+        lastStage = INITIAL_STAGE_INDEX;
+        lastWave = INITIAL_WAVE_INDEX;
+    }
+
     private void Update()
     {
         if (enemyPrefab == null || player == null) return;
+
+        if (GameManager.Instance != null && GameManager.Instance.IsGameOver) return;
+
+        elapsedTime += Time.deltaTime;
 
         HandleDifficultyScaling();
         HandleWaveAndElite();
@@ -49,7 +67,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void HandleDifficultyScaling()
     {
-        int stage = Mathf.FloorToInt(Time.time / STAGE_DURATION);
+        int stage = Mathf.FloorToInt(elapsedTime / STAGE_DURATION);
 
         if (stage != lastStage)
         {
@@ -64,7 +82,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void HandleWaveAndElite()
     {
-        int wave = Mathf.FloorToInt(Time.time / WAVE_DURATION);
+        int wave = Mathf.FloorToInt(elapsedTime / WAVE_DURATION);
 
         if (wave != lastWave)
         {

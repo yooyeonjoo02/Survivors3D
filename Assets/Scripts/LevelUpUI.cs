@@ -21,10 +21,14 @@ public class LevelUpUI : MonoBehaviour
 
         attackUpButton.onClick.AddListener(OnClickAttackUp);
         speedUpButton.onClick.AddListener(OnClickSpeedUp);
+
+        XPManager.Instance.OnLevelUp += Open;
+
     }
 
     private void Open()
     {
+        Debug.Log("LevelUp ÇÔ¼ö ½ÇÇàµÊ");
         levelUpPanel.SetActive(true);
         Time.timeScale = GAME_PAUSE_TIME_SCALE;
     }
